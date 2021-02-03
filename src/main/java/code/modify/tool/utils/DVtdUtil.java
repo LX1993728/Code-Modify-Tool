@@ -51,7 +51,7 @@ public class DVtdUtil {
                     }
                 }else { // 找到了指定的依赖，但是依赖中不包含version标签,则需要在当前的依赖中插入指定的新version
                     if (vn.toElement(VTDNav.FC, "artifactId")){
-                        xm.insertAfterElement(String.format("\n\t\t\t<version>%s</version>", version).getBytes());
+                        xm.insertAfterElement(String.format("\n\t\t\t<version>%s</version>", version));
                         log.info("---- 在指定依赖中未找到version, 插入为" + version + " ----");
                     }
                 }
@@ -61,10 +61,23 @@ public class DVtdUtil {
             int r2 = ap.evalXPath();
             if (r2 != -1 && scope != null && !scope.isEmpty()){
                 if (vn.toElement(VTDNav.FC, "scope")){
-                    log.info("---- 在指定依赖中找到scope, 更新为" + scope + " ----");
+                    final int sIndex = vn.getText();
+                    if (sIndex != -1){
+                        String oldScope = vn.toNormalizedString(sIndex);
+                        xm.updateToken(sIndex, scope);
+                        log.info("---- 在指定依赖中找到scope,旧值为 " + oldScope + " 更新为" + scope + " ----");
+                    }
                 }else {
-                    log.info("---- 在指定依赖中未找到scope, 插入为" + scope + " ----");
+                    if (vn.toElement(VTDNav.FC, "artifactId")){
+                        xm.insertAfterElement(String.format("\n\t\t\t<scope>%s</scope>", scope));
+                        log.info("---- 在指定依赖中未找到scope, 插入为" + scope + " ----");
+                    }
                 }
+            }
+            String pattern2 = "//prefix:dependencies";
+            if (r1 == -1){
+                // 需要判断是否存在<dependencies>标签
+                ap.selectXPath(pattern2);
             }
 
             xm.output(pomUrl);
