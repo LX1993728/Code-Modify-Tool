@@ -75,9 +75,23 @@ public class DVtdUtil {
                 }
             }
             String pattern2 = "//prefix:dependencies";
-            if (r1 == -1){
+            if (r1 == -1){ // 说明不存在指定的dependency标签
+                String dStr = getDependency(groupId, artifactId, version, scope);
                 // 需要判断是否存在<dependencies>标签
                 ap.selectXPath(pattern2);
+                ap.resetXPath();
+                final int rds = ap.evalXPath();
+                if (rds == -1){ // 说明不存在 dependencies 父标签
+                    // 则在project标签的底部插入指定的dependencies
+                    if (vn.toElement(VTDNav.FC, "project")){
+                        String insertStr = String.format("\n\t<dependencies>%s</dependencies>\n\n", dStr);
+                        xm.insertBeforeTail(insertStr);
+                    }
+                }else {
+                    xm.insertBeforeTail(dStr);
+                }
+                log.info(String.format("---- 插入依赖成功: groupId=%s\tartifactId=%s\tversion=%s\tscope=%s\t ----",
+                        groupId, artifactId, version, scope));
             }
 
             xm.output(pomUrl);
@@ -109,6 +123,32 @@ public class DVtdUtil {
             count++;
         }
         log.info("Total # of element "+count);
+    }
+
+    /**
+     * 拼接依赖
+     * @param groupId
+     * @param artifactId
+     * @param version
+     * @param scope
+     * @return
+     */
+    private static String getDependency( String groupId,
+                                         String artifactId,
+                                         String version,
+                                         String scope){
+        StringBuffer s = new StringBuffer();
+        s.append("\n\t\t<dependency>");
+        s.append(String.format("\n\t\t\t<groupId>%s</groupId>", groupId));
+        s.append(String.format("\n\t\t\t<artifactId>%s</artifactId>", artifactId));
+        if (version != null && !version.isEmpty()){
+            s.append(String.format("\n\t\t\t<version>%s</version>", version));
+        }
+        if (scope != null && !scope.isEmpty()){
+            s.append(String.format("\n\t\t\t<scope>%s</scope>", scope));
+        }
+        s.append("\n\t\t</dependency>\n\t");
+        return s.toString();
     }
 
     public static void main(String[] args){
