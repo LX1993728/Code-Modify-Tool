@@ -1,4 +1,4 @@
-package code.modify.tool.utils;
+package code.modify.tool.utils.pomxml;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;

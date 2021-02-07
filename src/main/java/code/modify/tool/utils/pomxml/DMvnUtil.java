@@ -1,4 +1,4 @@
-package code.modify.tool.utils;
+package code.modify.tool.utils.pomxml;
 
 import lombok.extern.log4j.Log4j;
 import org.apache.maven.model.Dependency;
