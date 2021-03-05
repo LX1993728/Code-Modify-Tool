@@ -1,6 +1,7 @@
 package code.modify.tool.utils.jgit;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
@@ -10,7 +11,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import java.io.File;
 import java.io.IOException;
 
-@Log4j
+@Slf4j
 public final class GitUtil {
     private String localPath, localGitPath, remotePath;
     private Repository localRepository;
@@ -54,7 +55,9 @@ public final class GitUtil {
         Git.cloneRepository()
                 .setURI(remotePath)
                 .setBranch(branchName)
-                .setDirectory(new File(localPath)).call();
+                .setDirectory(new File(localPath))
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(this.username, this.password))
+                .call();
         log.info("clone success");
     }
 
@@ -65,7 +68,9 @@ public final class GitUtil {
      * @throws Exception
      */
     public void pull(String branchName) throws Exception {
-        git.pull().setRemoteBranchName(branchName).call();
+        git.pull().setRemoteBranchName(branchName)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(this.username, this.password))
+                .call();
         log.info("pull success");
     }
 
@@ -100,7 +105,9 @@ public final class GitUtil {
      * @throws Exception
      */
     public void commit(String message) throws Exception {
-        git.commit().setMessage(message).call();
+        final CommitCommand commitCommand = git.commit().setMessage(message);
+        commitCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(this.username, this.password));
+        commitCommand.call();
         log.info("commit success");
     }
 

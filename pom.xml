@@ -11,6 +11,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <slf4j.version>1.7.30</slf4j.version>
     </properties>
 
     <dependencies>
@@ -18,7 +19,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.6.0</version>
+            <version>3.6.3</version>
         </dependency>
 
         <!--   XPath     -->
@@ -45,6 +46,27 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-compat</artifactId>
             <version>3.6.3</version>
+        </dependency>
+        <!--     embed maven-3.6.3 间接补丁依赖 解决私服配置问题  -->
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-connector-basic</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-transport-wagon</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http</artifactId>
+            <version>3.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-provider-api</artifactId>
+            <version>3.4.3</version>
         </dependency>
 
         <!--    整合内嵌的svn工具   -->
@@ -81,6 +103,18 @@
             <version>1.2.17</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <!-- 注意，若无type为jar则报错-->
+            <type>jar</type>
+        </dependency>
 
     </dependencies>
 

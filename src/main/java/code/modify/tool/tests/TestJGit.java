@@ -11,8 +11,9 @@ public class TestJGit {
         String password = "liuxun1993728";
         final GitUtil gitUtil = new GitUtil(localPath, remotePath, username, password);
         try {
-            gitUtil.cloneBranch("dev");
-        } catch (GitAPIException e) {
+            gitUtil.cloneBranch("master");
+            gitUtil.pull("master");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

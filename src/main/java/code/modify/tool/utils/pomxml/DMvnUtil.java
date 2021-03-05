@@ -1,6 +1,7 @@
 package code.modify.tool.utils.pomxml;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -17,7 +18,7 @@ import java.util.List;
  * 操作pom文件 修改依赖的工具类
  * 但是会修改 pom文件的格式，不方便SVN/Git 等版本工具进行比较
  */
-@Log4j
+@Slf4j
 public class DMvnUtil {
     /**
      *

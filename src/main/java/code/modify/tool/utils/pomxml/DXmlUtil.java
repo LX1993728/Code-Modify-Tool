@@ -14,6 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 import code.modify.tool.services.MappedNamespaceContext;
 import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,7 +28,7 @@ import java.io.File;
  * 尝试使用XPath修改依赖
  * TODO// 存在的缺陷: 关于头部标签project的xmlns 会自动格式化头
  */
-@Log4j
+@Slf4j
 public class DXmlUtil {
 
 

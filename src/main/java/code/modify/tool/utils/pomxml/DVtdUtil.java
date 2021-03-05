@@ -2,6 +2,7 @@ package code.modify.tool.utils.pomxml;
 
 import com.ximpleware.*;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
@@ -11,7 +12,7 @@ import java.io.File;
  * 参考网址2: https://vtd-xml.sourceforge.io/codeSample/cs1.html
  * 参考网址3: https://vtd-xml.sourceforge.io/codeSample/cs10.html
  */
-@Log4j
+@Slf4j
 public class DVtdUtil {
     public static boolean addOrUpdateXmlByXpath(String url,
                                                 String groupId,

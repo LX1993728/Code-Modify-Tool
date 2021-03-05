@@ -3,6 +3,7 @@ import java.io.File;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
@@ -19,7 +20,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-@Log4j
+@Slf4j
 public class SVNKitUtil {
 
     // 更新状态 true:没有程序在执行更新，反之则反
