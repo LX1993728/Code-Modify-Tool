@@ -21,6 +21,14 @@ public class PD {
         dSet = new HashSet<>();
     }
 
+    public PD() {
+    }
+
+    public PD(String url, D ... ds) {
+        this.url = url;
+        this.dSet.addAll(Arrays.asList(ds));
+    }
+
     public void addD(D d){
         dSet.add(d);
     }
