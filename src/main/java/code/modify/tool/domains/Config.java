@@ -3,6 +3,7 @@ package code.modify.tool.domains;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,21 +45,51 @@ public class Config {
         return getGlobalSpace() + File.separator + "front";
     }
 
+    /**
+     *
+     * @param paths
+     * @return
+     */
     private static String getEnvPath(String ... paths){
-        return null;
+        StringBuffer buffer = new StringBuffer(getGlobalSpace()).append(File.separator);
+        for (String p : paths){
+            buffer.append(p).append(File.separator);
+        }
+
+        return buffer.toString();
     }
 
     /**
      * 获取本地环境中需要修改的List项
      * @return
      */
-    public List<PD> getLocalPomsList(){
+    public List<PD> getLocalPomsNeedModifiedList(){
+        //  需要修改的代码依赖项
         final D lombokD = new D("org.projectlombok", "lombok", "1.18.10", "provided");
         final D jaxpD = new D("com.sun.org.apache", "jaxp-ri", "1.4");
 
-        //
+        // 获取需要修改的环境内部pom根路径
+        String streamagentPath = getEnvPath("show", "streamagent");
+        String clientShowPath = getEnvPath("trade-show", "client-show");
+        String tradeShowPath = getEnvPath("trade-show");
+        String basePath = getEnvPath("base");
+        String webPath = getEnvPath("web");
 
-        return null;
+        // 封装PD对象: 包含需要修改的依赖项和对应的
+        final PD streamagentPD = new PD(streamagentPath, jaxpD);
+        final PD clientShowPD = new PD(clientShowPath, lombokD);
+        final PD tradeShowPD = new PD(tradeShowPath, lombokD);
+        final PD basePD = new PD(basePath, jaxpD);
+        final PD webPD = new PD(webPath, lombokD);
+
+        List<PD> resultPDS = new ArrayList<>();
+        resultPDS.add(streamagentPD);
+        resultPDS.add(clientShowPD);
+        resultPDS.add(tradeShowPD);
+        resultPDS.add(basePD);
+        resultPDS.add(webPD);
+
+        return resultPDS;
     }
 
 }

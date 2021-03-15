@@ -1,9 +1,12 @@
 package code.modify.tool.utils.svnkit;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
@@ -11,6 +14,7 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.internal.util.DefaultSVNDebugLogger;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
@@ -19,6 +23,8 @@ import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.tmatesoft.svn.util.ISVNDebugLog;
+import org.tmatesoft.svn.util.SVNDebugLog;
 
 @Slf4j
 public class SVNKitUtil {
@@ -69,7 +75,7 @@ public class SVNKitUtil {
 
         // 通过客户端管理类获得updateClient类的实例。
         SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
-
+        updateClient.setDebugLog(getSvnLogger());
         updateClient.setIgnoreExternals(false);
 
         // 执行check out 操作，返回工作副本的版本号。
@@ -119,6 +125,32 @@ public class SVNKitUtil {
         return true;
     }
 
+    public static void switchToBranch(final String branchUrl,
+                                      final String svnUsername,
+                                      final String svnPassword,
+                                      final String targetPath) throws SVNException, IOException {
+        final File baseDir = new File(targetPath);
+        ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+        // 实例化客户端管理类
+        ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions) options, svnUsername, svnPassword);
+        final SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
+        updateClient.setDebugLog(getSvnLogger());
+        updateClient.doSwitch(baseDir,
+                SVNURL.parseURIEncoded(branchUrl),
+                SVNRevision.HEAD,
+                SVNRevision.HEAD,
+                SVNDepth.INFINITY,
+                false,
+                false);
+
+    }
+
+    private static ISVNDebugLog getSvnLogger(){
+        final ISVNDebugLog svnDebugLogger = new CustomSVNLogger();
+        SVNDebugLog.setDefaultLog(svnDebugLogger);
+        return svnDebugLogger;
+    }
+
     /**
      * 更新svn
      *
@@ -143,6 +175,7 @@ public class SVNKitUtil {
             File updateFile = new File(targetPath);
             // 获得updateClient的实例
             SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
+            updateClient.setDebugLog(getSvnLogger());
             updateClient.setIgnoreExternals(false);
             // 执行更新操作
             long versionNum = updateClient.doUpdate(updateFile, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);

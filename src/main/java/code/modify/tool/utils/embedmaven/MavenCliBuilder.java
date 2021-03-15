@@ -1,5 +1,6 @@
 package code.modify.tool.utils.embedmaven;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -56,6 +57,7 @@ public class MavenCliBuilder {
                            String... args) {
         this(workingDirectory, null, null, null, args);
     }
+
 
     /**
      * 获取setting.xml文件的路径
@@ -124,6 +126,30 @@ public class MavenCliBuilder {
             mavenCli.doMain(this.args, this.workingDirectory.getCanonicalPath(), this.stdout, this.stderr);
         } catch (Exception e) {
             log.info(e.getMessage(), e);
+        }finally {
+            this.stdout.close();
+            this.stderr.close();
         }
     }
+
+    public void buildWithConsole(){
+        try {
+            ByteArrayOutputStream baosStdout = new ByteArrayOutputStream();
+            PrintStream printStreamStdout = new PrintStream(baosStdout);
+            valid();
+            wrapArgs();
+            log.info("start execute mvn ->\t" + Arrays.toString(args));
+            mavenCli.doMain(this.args, this.workingDirectory.getCanonicalPath(), printStreamStdout, null);
+
+            String out = baosStdout.toString("UTF-8");
+            log.info("===========this is separator==============");
+            log.info(out);
+        } catch (Exception e) {
+            log.info(e.getMessage(), e);
+        }finally {
+            this.stdout.close();
+            this.stderr.close();
+        }
+    }
+
 }
