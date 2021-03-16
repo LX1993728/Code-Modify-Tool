@@ -125,6 +125,44 @@ public class SVNKitUtil {
         return true;
     }
 
+    /**
+     *
+     * @param svnUsername
+     * @param svnPassword
+     * @param targetPath
+     * @param includeURLHeader
+     * @return
+     */
+    public static String getRemoteUrl(
+            final String svnUsername,
+            final String svnPassword,
+            final String targetPath,
+            boolean includeURLHeader
+    ){
+        final File baseDir = new File(targetPath);
+        ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+        // 实例化客户端管理类
+        ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions) options, svnUsername, svnPassword);
+        String remoteUrl = null;
+        try {
+            final SVNStatus svnStatus = ourClientManager.getStatusClient().doStatus(baseDir, true);
+            SVNURL svnurl = svnStatus.getRemoteURL();
+            remoteUrl = includeURLHeader ? svnurl.toString() : svnurl.getPath();
+        } catch (SVNException e) {
+            e.printStackTrace();
+        }
+        return remoteUrl;
+    }
+
+    /**
+     *
+     * @param branchUrl  要切换的远程分支的地址
+     * @param svnUsername  svn的用户名
+     * @param svnPassword svn的密码
+     * @param targetPath 本地仓库的的磁盘路径
+     * @throws SVNException
+     * @throws IOException
+     */
     public static void switchToBranch(final String branchUrl,
                                       final String svnUsername,
                                       final String svnPassword,
@@ -323,7 +361,6 @@ public class SVNKitUtil {
 
     public static void main(String[] args) {
         // log.info(checkOut());
-
 //        log.info(doCleanup());
         // log.info(doCleanup());
     }

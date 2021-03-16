@@ -1,7 +1,7 @@
 package code.modify.tool;
 
-import code.modify.tool.domains.D;
-import code.modify.tool.domains.PD;
+import code.modify.tool.domains.Dependency;
+import code.modify.tool.domains.PomDependencies;
 import code.modify.tool.utils.pomxml.DMvnUtil;
 
 import java.util.Set;
@@ -11,20 +11,20 @@ public class Main {
         final DMvnUtil depencyTool = new DMvnUtil();
         // 定义需要修改的pom的数组
 
-        final PD pd1 = new PD();
-        pd1.setUrl("poms");
-        pd1.addD(new D[]{
-                new D("org.projectlombok","lombok","1.18.10","provided")
+        final PomDependencies pomDependencies1 = new PomDependencies();
+        pomDependencies1.setUrl("poms");
+        pomDependencies1.addD(new Dependency[]{
+                new Dependency("org.projectlombok","lombok","1.18.10","provided")
         });
-        updateDForPom(pd1);
+        updateDForPom(pomDependencies1);
 
     }
 
-    public static void updateDForPom(PD pd){
-        String url = pd.getUrl();
-        final Set<D> dSet = pd.getDSet();
-        for (D d : dSet){
-            DMvnUtil.addOrUpdateXml(url, d.getGroupId(), d.getArtifactId(), d.getVersion(), d.getScope());
+    public static void updateDForPom(PomDependencies pomDependencies){
+        String url = pomDependencies.getUrl();
+        final Set<Dependency> dependencySet = pomDependencies.getDependencySet();
+        for (Dependency dependency : dependencySet){
+            DMvnUtil.addOrUpdateXml(url, dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getScope());
         }
     }
 }

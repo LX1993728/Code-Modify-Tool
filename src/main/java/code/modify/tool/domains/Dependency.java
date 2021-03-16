@@ -10,18 +10,18 @@ import java.util.Objects;
  */
 @Data
 @RequiredArgsConstructor
-public class D {
+public class Dependency {
     private String groupId;
     private String artifactId;
     private String version;
     private String scope;
 
-    public D(String groupId, String artifactId, String version) {
+    public Dependency(String groupId, String artifactId, String version) {
         this.groupId = groupId.trim();
         this.artifactId = artifactId.trim();
         this.version = version.trim();
     }
-    public D(String groupId, String artifactId, String version, String scope) {
+    public Dependency(String groupId, String artifactId, String version, String scope) {
        this(groupId, artifactId, version);
        this.scope = scope.trim();
     }
@@ -29,9 +29,9 @@ public class D {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof D)) return false;
-        D d = (D) o;
-        return groupId.equals(d.groupId) && artifactId.equals(d.artifactId) && version.equals(d.version);
+        if (!(o instanceof Dependency)) return false;
+        Dependency dependency = (Dependency) o;
+        return groupId.equals(dependency.groupId) && artifactId.equals(dependency.artifactId) && version.equals(dependency.version);
     }
 
     @Override

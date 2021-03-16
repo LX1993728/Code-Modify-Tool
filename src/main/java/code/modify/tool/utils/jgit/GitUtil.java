@@ -31,7 +31,6 @@ public final class GitUtil {
             e.printStackTrace();
         }
         git = new Git(localRepository);
-
     }
 
     /**

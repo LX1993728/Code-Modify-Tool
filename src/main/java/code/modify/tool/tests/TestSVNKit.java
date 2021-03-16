@@ -3,9 +3,11 @@ package code.modify.tool.tests;
 import code.modify.tool.utils.svnkit.SVNKitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNURL;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 @Slf4j
 public class TestSVNKit {
@@ -34,6 +36,12 @@ public class TestSVNKit {
         // 测试切换分支
         try {
             SVNKitUtil.switchToBranch(branchUrl, svnUsername, svnPassword, targetPath);
+            SVNKitUtil.doCleanup(svnUsername, svnPassword, targetPath);
+            String remoteUrl = SVNKitUtil.getRemoteUrl(svnUsername, svnPassword,  targetPath, false);
+
+            final String path = SVNURL.parseURIEncoded(branchUrl).getPath();
+            log.info("remoteUrl=\t{} \tpath={}", remoteUrl,path);
+
         } catch (SVNException e) {
             e.printStackTrace();
         } catch (IOException e) {

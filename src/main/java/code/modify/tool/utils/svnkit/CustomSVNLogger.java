@@ -14,20 +14,20 @@ import java.util.logging.Level;
 public class CustomSVNLogger extends SVNDebugLogAdapter {
     @Override
     public void log(SVNLogType svnLogType, Throwable throwable, Level level) {
-        log.error("{}/t{}/t{}", svnLogType, throwable, level);
+       // log.error("{}/t{}/t{}", svnLogType, throwable, level);
     }
 
     @Override
     public void log(SVNLogType svnLogType, String s, Level level) {
         if (svnLogType.equals(SVNLogType.WC)){
-            log.info("{} --- \t{}",svnLogType.getShortName(), s);
+          //  log.info("{} --- \t{}",svnLogType.getShortName(), s);
         }
     }
 
     @Override
     public void log(SVNLogType svnLogType, String s, byte[] bytes) {
         if (svnLogType.equals(SVNLogType.WC)){
-            log.info("{} ++++ \t{}\t{}", svnLogType.getShortName(), s, StringUtils.newString(bytes, "GBK"));
+          //  log.info("{} ++++ \t{}\t{}", svnLogType.getShortName(), s, StringUtils.newString(bytes, "GBK"));
         }
     }
 }
