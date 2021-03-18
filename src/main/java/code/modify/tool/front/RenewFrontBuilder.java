@@ -136,7 +136,7 @@ public class RenewFrontBuilder {
      * 对重构后的相关环境依赖以及front进行打包
      */
     public static void BuildEnvAndRenewFront(){
-        
+
     }
 
     /**
