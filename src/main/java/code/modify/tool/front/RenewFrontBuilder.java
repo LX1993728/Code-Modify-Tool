@@ -133,18 +133,17 @@ public class RenewFrontBuilder {
     }
 
     /**
-     * 对重构后的front进行打包
+     * 对重构后的相关环境依赖以及front进行打包
      */
     public static void BuildEnvAndRenewFront(){
-        // step1: 判断front工程是否存在 [对应的文件夹存在 && 具有对应的分支地址]
+        
+    }
 
-        // step2: 如果不存在则进行代码的检出，否则进行代码的更新
-
-        // step3: 查看当前的分支是否是指定的分支，如果不是则切换为对应的分支
-
-        // step4: 最后按照profile进行打包
-
-        // step5: 将打好的包重命名，备份后传输到指定的位置
+    /**
+     * 将打包好的front 运行jar包重命名拷贝到指定的路径并上传
+     */
+    public static void copyRenewFrontJarAndUpload(){
+        //TODO://
     }
 
     public static void main(String[] args) throws IOException, SVNException, GitAPIException {
