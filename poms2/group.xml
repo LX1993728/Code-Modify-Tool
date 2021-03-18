@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <datasources>
+
+  
+    <ds name="idCenterDS" 
+        driverClassName="com.mysql.jdbc.Driver" 
+        url="jdbc:mysql://show-m.db.internal.tllm.cxg.changyou.com:8067/xc_show_db?characterEncoding=UTF-8"
+		username="tl_show"
+		password="n9IsXgIROdzleABddSxP35SW2vYCSDIl"
+        maxActive="25"
+        maxIdle="1"
+        maxWait="10000" />
+
+    <ds name="sohushowdb"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://show-m.db.internal.tllm.cxg.changyou.com:8067/xc_show_db?characterEncoding=UTF-8"
+		username="tl_show"
+		password="n9IsXgIROdzleABddSxP35SW2vYCSDIl"
+        maxActive="50"
+        maxIdle="5"
+        maxWait="10000" />
+
+    <ds name="sohushowdbslave"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://show-s1.db.internal.tllm.cxg.changyou.com:8067/xc_show_db?characterEncoding=UTF-8"
+		username="tl_show"
+		password="n9IsXgIROdzleABddSxP35SW2vYCSDIl"
+        maxActive="125"
+        maxIdle="5"
+        maxWait="10000" />
+
+    <ds name="sohuactivitydb"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://show-s1.db.internal.tllm.cxg.changyou.com:8067/xc_activities_db?characterEncoding=UTF-8"
+		username="tl_show"
+		password="n9IsXgIROdzleABddSxP35SW2vYCSDIl"
+        maxActive="125"
+        maxIdle="5"
+        maxWait="10000" />
+
+    <ds name="statisticdb"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://show-m.db.internal.tllm.cxg.changyou.com:8067/xc_payment_statistic_db?characterEncoding=utf-8"
+		username="tl_show" 
+		password="n9IsXgIROdzleABddSxP35SW2vYCSDIl" 
+        maxActive="125" 
+        maxIdle="5" 
+        maxWait="10000" />
+        
+        
+        
+  </datasources>
+  <groups>
+    <group name="g1" master="sohushowdb" slave="sohushowdbslave"/>
+    <group name="g2" master="sohushowdb" slave="sohushowdb"/>
+    <group name="g3" master="sohuactivitydb" slave="sohuactivitydb"/>
+    <group name="g4" master="statisticdb" slave="statisticdb"/>
+  </groups>
+</root>

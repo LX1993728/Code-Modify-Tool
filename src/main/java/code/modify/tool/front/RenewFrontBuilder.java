@@ -88,10 +88,8 @@ public class RenewFrontBuilder {
 
     /**
      * 对重构后的front进行打包
-     * @param branch 分支名称
-     * @param profile 哪种环境
      */
-    public static void pullAndBuildRenewFront(String profile, String branch){
+    public static void pullAndBuildRenewFront(){
         // step1: 判断front工程是否存在 [对应的文件夹存在 && 具有对应的分支地址]
 
         // step2: 如果不存在则进行代码的检出，否则进行代码的更新

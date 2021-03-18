@@ -1,14 +1,11 @@
 package code.modify.tool;
 
-import code.modify.tool.domains.Dependency;
-import code.modify.tool.domains.PomDependencies;
-import code.modify.tool.utils.pomxml.DMvnUtil;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Set;
-
+@Slf4j
 public class Main {
     public static void main(String[] args) throws Exception{
-
+        // log.info("args={}", args);
     }
 
 }

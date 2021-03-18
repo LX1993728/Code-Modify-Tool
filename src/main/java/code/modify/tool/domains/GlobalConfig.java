@@ -25,6 +25,9 @@ public class GlobalConfig {
     // front 对应的gitlab地址
     @Getter
     private static String frontGitUrl = "http://10.128.41.7/java/front.git";
+    // front 对应的git branch 默认是master
+    @Getter
+    private static String frontGitBranch = "master";
 
     @Getter
     private static String gitUsername = "liuxun";
@@ -34,6 +37,9 @@ public class GlobalConfig {
     private static String svnUsername = "liuxun";
     @Getter
     private static String svnPassword = "liuxun1993728";
+    // 主要针对front和service而言 常见有三个值 tl_trunk/tl_lm/tl_global
+    @Getter
+    private static String profile;
 
     // 构建工程的根目录
     @Getter
@@ -59,7 +65,7 @@ public class GlobalConfig {
     // 加载仓库与构建目录相关的配置文件 默认文件名是config.properties
     private static void loadConfProperties() throws IOException {
         sepLine("开始加载全局配置", false);
-        String confLocation = "config.properties";
+        String confLocation = "config/config.properties";
         File configFile = new File(confLocation);
         if (!configFile.exists()){
             log.info("config.properties not exists, use default config values");
@@ -76,12 +82,16 @@ public class GlobalConfig {
         svnPassword =  props.getProperty("svnPassword", svnPassword);
         buildWorkSpace =  props.getProperty("buildWorkSpace", buildWorkSpace);
         repositoryPath = props.getProperty("repositoryPath", repositoryPath);
+        profile = props.getProperty("profile", profile);
+        frontGitBranch = props.getProperty("frontGitBranch", frontGitBranch);
 
         log.info("config.properties exists, after load config and the values follow......");
         log.info("serverSvnUrl=\t{}", serverSvnUrl);
         log.info("serviceRenewSvnUrl=\t{}", serviceRenewSvnUrl);
         log.info("frontGitUrl=\t{}", frontGitUrl);
+        log.info("frontGitBranch=\t{}", frontGitBranch);
         log.info("buildWorkSpace=\t{}", buildWorkSpace);
+        log.info("profile=\t{}", profile);
         log.info("repositoryPath=\t{}", repositoryPath);
         sepLine("全局配置加载完毕", true);
     }
