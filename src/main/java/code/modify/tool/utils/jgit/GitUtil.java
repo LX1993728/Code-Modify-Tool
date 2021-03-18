@@ -66,11 +66,19 @@ public final class GitUtil {
      * @param branchName 远程分支名称
      * @throws Exception
      */
-    public void pull(String branchName) throws Exception {
+    public void pull(String branchName) throws GitAPIException {
         git.pull().setRemoteBranchName(branchName)
                 .setCredentialsProvider(new UsernamePasswordCredentialsProvider(this.username, this.password))
                 .call();
         log.info("pull success");
+    }
+
+    /**
+     * git checkout 切换分支
+     * @param branchName
+     */
+    public void checkout(String branchName) throws GitAPIException {
+        git.checkout().setCreateBranch(true).setName(branchName).call();
     }
 
     /**
@@ -126,7 +134,11 @@ public final class GitUtil {
      * @throws IOException
      */
     public String getCurrentBranch() throws IOException {
-        return git.getRepository().getBranch();
+        final Repository repository = git.getRepository();
+        if (repository == null){
+            return null;
+        }
+        return repository.getBranch();
     }
 
     /**
@@ -134,7 +146,11 @@ public final class GitUtil {
      * @return
      */
     public String getRemoteRepositoryUrl(){
-        return git.getRepository().getConfig().getString("remote", "origin", "url");
+        final Repository repository = git.getRepository();
+        if (repository == null){
+            return null;
+        }
+        return repository.getConfig().getString("remote", "origin", "url");
     }
 
 }

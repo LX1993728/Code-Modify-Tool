@@ -2,10 +2,14 @@ package code.modify.tool.front;
 
 import code.modify.tool.domains.GlobalConfig;
 import code.modify.tool.domains.PomDependencies;
+import code.modify.tool.utils.ReplaceUtil;
+import code.modify.tool.utils.jgit.GitUtil;
 import code.modify.tool.utils.pomxml.DVtdUtil;
 import code.modify.tool.utils.svnkit.SVNKitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.tmatesoft.svn.core.SVNException;
 
 import java.io.File;
@@ -17,11 +21,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RenewFrontBuilder {
 
     /**
-     * 检出global/server代码后, 需要修改的项目依赖环境的本地依赖 并build
+     * 检出global/server代码后, 需要修改的项目依赖环境的本地依赖 以及数据库配置等
      */
-    public static void pullAndBuildEnvironment() throws IOException, SVNException {
+    public static void pullAndModifyCode() throws IOException, SVNException, GitAPIException {
         // step1: 判断构建工程是否存在
-        GlobalConfig.sepLine("开始新版打包", true);
+        GlobalConfig.sepLine("开始新版代码环境处理...", true);
         String serverSpacePath = GlobalConfig.getGlobalServerSpace();
         File  gsFile = new File(serverSpacePath);
 
@@ -82,14 +86,56 @@ public class RenewFrontBuilder {
             GlobalConfig.sepLine("", true);
         });
 
+        String profile = GlobalConfig.getProfile();
+        if (profile.equalsIgnoreCase("tl_trunk")){
+            log.info("当前是测试环境 profile={}, service数据源端口修改为8067...", profile);
+            for (String gPath : GlobalConfig.needModifyDsPortList()) {
+                ReplaceUtil.replaceTextInFile(gPath, "8066", "8067");
+            }
+        }else {
+            log.info("当前非测试环境 profile={}, service数据源端口修改为8066...", profile);
+            for (String gPath : GlobalConfig.needModifyDsPortList()) {
+                ReplaceUtil.replaceTextInFile(gPath, "8067", "8066");
+            }
+        }
+
+        GlobalConfig.sepLine("开始处理重构新版front对应的代码", true);
+        String renewFrontSpace = GlobalConfig.getRenewFrontSpace();
+        File rfFile = new File(renewFrontSpace);
+        GitUtil gitUtil = new GitUtil(renewFrontSpace, GlobalConfig.getFrontGitUrl(), GlobalConfig.getGitUsername(), GlobalConfig.getGitPassword());
+        if (!rfFile.exists()){
+            log.info("renew front space 不存在, 正在clone...");
+            gitUtil.cloneBranch(GlobalConfig.getFrontGitBranch());
+        }else {
+            String localRenewFrontUrl = gitUtil.getRemoteRepositoryUrl();
+            if (!StringUtils.isEmpty(localRenewFrontUrl) && localRenewFrontUrl.trim().equals(GlobalConfig.getFrontGitUrl())){
+                log.info("renew front space 已经存在, 正在检查分支...");
+                if (gitUtil.getCurrentBranch().trim().equals(GlobalConfig.getFrontGitBranch().trim())){
+                    log.info("renew front space 当前分支为: {} 和配置指定的分支: {} 相同, 不需要切换分支...", gitUtil.getCurrentBranch(),
+                            GlobalConfig.getFrontGitBranch());
+                }else {
+                    log.info("renew front space 当前分支为: {} 和配置指定的分支: {} 不相同, 代码分支切换中...", gitUtil.getCurrentBranch(),
+                            GlobalConfig.getFrontGitBranch());
+                    gitUtil.checkout(GlobalConfig.getFrontGitBranch());
+                }
+                log.info("renew front space 当前分支为: {}, 代码更新中...", gitUtil.getCurrentBranch());
+                gitUtil.pull(GlobalConfig.getFrontGitBranch());
+            }else {
+                log.info("renew front space 文件夹存在, 但仓库存在错误,删除中...");
+                FileUtils.deleteQuietly(rfFile);
+                log.info("删除文件夹后重新克隆renew front space...");
+                gitUtil.cloneBranch(GlobalConfig.getFrontGitBranch());
+            }
+        }
+
         // step7: 对所依赖的环境模块依次进行install
-        log.info("TODO:// 处理环境的install 工作");
+        log.info("server space && renew front space is Over, TODO://处理环境的install工作");
     }
 
     /**
      * 对重构后的front进行打包
      */
-    public static void pullAndBuildRenewFront(){
+    public static void BuildEnvAndRenewFront(){
         // step1: 判断front工程是否存在 [对应的文件夹存在 && 具有对应的分支地址]
 
         // step2: 如果不存在则进行代码的检出，否则进行代码的更新
@@ -101,7 +147,7 @@ public class RenewFrontBuilder {
         // step5: 将打好的包重命名，备份后传输到指定的位置
     }
 
-    public static void main(String[] args) throws IOException, SVNException {
-        pullAndBuildEnvironment();
+    public static void main(String[] args) throws IOException, SVNException, GitAPIException {
+       pullAndModifyCode();
     }
 }

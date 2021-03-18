@@ -27,7 +27,7 @@ public class GlobalConfig {
     private static String frontGitUrl = "http://10.128.41.7/java/front.git";
     // front 对应的git branch 默认是master
     @Getter
-    private static String frontGitBranch = "master";
+    private static String frontGitBranch = "dev";
 
     @Getter
     private static String gitUsername = "liuxun";
@@ -39,7 +39,7 @@ public class GlobalConfig {
     private static String svnPassword = "liuxun1993728";
     // 主要针对front和service而言 常见有三个值 tl_trunk/tl_lm/tl_global
     @Getter
-    private static String profile;
+    private static String profile = "tl_trunk";
 
     // 构建工程的根目录
     @Getter
@@ -131,7 +131,7 @@ public class GlobalConfig {
      * @return
      */
     public static String getRenewFrontSpace(){
-        return getGlobalServerSpace() + File.separator + "front";
+        return getBuildWorkSpace() + File.separator + "front";
     }
 
     /**
@@ -146,6 +146,25 @@ public class GlobalConfig {
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * 当当前是测试环境时，在server/web/service/..tl_lm/ 中需要修改数据库端口的文件列表
+     * @return
+     */
+    public static List<String> needModifyDsPortList(){
+        List<String> fileList = new ArrayList<>();
+        // web/service/src/main/resources/tl_lm
+        String fileName = "group.xml";
+        String bPath = getEnvPath("web", "service","src", "main", "resources", "tl_lm");
+        String filePath1 = bPath + File.separator + fileName;
+        String filePath2 = bPath + File.separator + "dev" + File.separator + fileName;
+        String filePath3 = bPath + File.separator + "release" + File.separator + fileName;
+
+        fileList.add(filePath1);
+        fileList.add(filePath2);
+        fileList.add(filePath3);
+        return fileList;
     }
 
     /**
