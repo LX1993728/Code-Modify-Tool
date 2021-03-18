@@ -12,6 +12,7 @@ public class TestEmbedMvn {
     public static void main(String[] args){
         String localPath = "C:\\Users\\liuxun\\Desktop\\runtime\\test\\front";
         // new MavenCliBuilder(new File(localPath),  "clean", "package").build();
-         new MavenCliBuilder(new File(localPath),  "clean", "compile").build();
+        // new MavenCliBuilder(new File(localPath),  "clean", "compile").buildWithConsole();
+         new MavenCliBuilder(new File(localPath),  "-v").buildWithConsole();
     }
 }

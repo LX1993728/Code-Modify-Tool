@@ -142,7 +142,9 @@ public class SVNKitUtil {
         final File baseDir = new File(targetPath);
         ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
         // 实例化客户端管理类
-        ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions) options, svnUsername, svnPassword);
+        // ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions) options, svnUsername, svnPassword);
+        ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions) options);
+
         String remoteUrl = null;
         try {
             final SVNStatus svnStatus = ourClientManager.getStatusClient().doStatus(baseDir, true);

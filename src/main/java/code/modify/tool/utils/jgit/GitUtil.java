@@ -119,5 +119,23 @@ public final class GitUtil {
         git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(this.username, this.password)).call();
         log.info("push success");
     }
+
+    /**
+     *
+     * @return 获取当前分支
+     * @throws IOException
+     */
+    public String getCurrentBranch() throws IOException {
+        return git.getRepository().getBranch();
+    }
+
+    /**
+     * 获取当前仓库对应的远程地址
+     * @return
+     */
+    public String getRemoteRepositoryUrl(){
+        return git.getRepository().getConfig().getString("remote", "origin", "url");
+    }
+
 }
 

@@ -42,11 +42,13 @@ public class MavenCliBuilder {
     }
 
     public MavenCliBuilder(File workingDirectory,
+                           File localRepository,
                            File settingsFile,
                            PrintStream stdout,
                            PrintStream stderr,
                            String... args) {
         this.workingDirectory = workingDirectory;
+        this.localRepository = localRepository;
         this.args = args;
         this.settingsFile = settingsFile == null ? this.settingsFile : settingsFile;
         this.stdout = stdout == null ? this.stdout : stdout;
@@ -55,7 +57,12 @@ public class MavenCliBuilder {
 
     public MavenCliBuilder(File workingDirectory,
                            String... args) {
-        this(workingDirectory, null, null, null, args);
+        this(workingDirectory, null,null, null, null, args);
+    }
+    public MavenCliBuilder(File workingDirectory,
+                           File localRepository,
+                           String... args) {
+        this(workingDirectory, localRepository,null, null, null, args);
     }
 
 
@@ -77,9 +84,11 @@ public class MavenCliBuilder {
     private PrintStream setDefaultStdLog(String logName){
         try {
             final File file = new File(logName);
+            /*
             if (!file.exists()){
                 file.createNewFile();
             }
+             */
             PrintStream stdout = new PrintStream(file);
             return stdout;
         } catch (Exception e) {

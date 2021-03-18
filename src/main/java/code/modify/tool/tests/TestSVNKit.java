@@ -36,8 +36,8 @@ public class TestSVNKit {
         // 测试切换分支
         try {
             SVNKitUtil.switchToBranch(branchUrl, svnUsername, svnPassword, targetPath);
-            SVNKitUtil.doCleanup(svnUsername, svnPassword, targetPath);
-            String remoteUrl = SVNKitUtil.getRemoteUrl(svnUsername, svnPassword,  targetPath, false);
+            // SVNKitUtil.doCleanup(svnUsername, svnPassword, targetPath);
+            String remoteUrl = SVNKitUtil.getRemoteUrl(svnUsername, svnPassword,  targetPath, true);
 
             final String path = SVNURL.parseURIEncoded(branchUrl).getPath();
             log.info("remoteUrl=\t{} \tpath={}", remoteUrl,path);

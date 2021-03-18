@@ -38,7 +38,7 @@ public class DVtdUtil {
                     groupId.trim(), artifactId.trim());
             ap.selectXPath(pattern);
             // 打印XPath选择的元素标签
-            printEleByXpath(ap, vn);
+            // printEleByXpath(ap, vn);
             // 需要重置XPath游标
             ap.resetXPath();
             int r1 = ap.evalXPath();
@@ -47,8 +47,12 @@ public class DVtdUtil {
                     final int vIndex = vn.getText();
                     if (vIndex != -1){
                         String oldVersion = vn.toNormalizedString(vIndex);
-                        xm.updateToken(vIndex, version);
-                        log.info("---- 在指定依赖中找到version,旧值为 " + oldVersion + " 更新为" + version + " ----");
+                        if (!oldVersion.trim().equals(version.trim())){
+                            xm.updateToken(vIndex, version);
+                            log.info("---- 在指定依赖中找到version,旧值为 " + oldVersion + " 更新为" + version + " ----");
+                        }else {
+                            log.info("---- 在指定依赖中找到version,旧值为 " + oldVersion + " 和新值 " + version + " 相同不更新----");
+                        }
                     }
                 }else { // 找到了指定的依赖，但是依赖中不包含version标签,则需要在当前的依赖中插入指定的新version
                     if (vn.toElement(VTDNav.FC, "artifactId")){
@@ -65,8 +69,12 @@ public class DVtdUtil {
                     final int sIndex = vn.getText();
                     if (sIndex != -1){
                         String oldScope = vn.toNormalizedString(sIndex);
-                        xm.updateToken(sIndex, scope);
-                        log.info("---- 在指定依赖中找到scope,旧值为 " + oldScope + " 更新为" + scope + " ----");
+                        if (!oldScope.equals(scope)){
+                            xm.updateToken(sIndex, scope);
+                            log.info("---- 在指定依赖中找到scope,旧值为 " + oldScope + " 更新为" + scope + " ----");
+                        }else {
+                            log.info("---- 在指定依赖中找到scope,旧值为 " + oldScope + " 等同于新值 " + scope + " 不进行更新");
+                        }
                     }
                 }else {
                     if (vn.toElement(VTDNav.FC, "artifactId")){

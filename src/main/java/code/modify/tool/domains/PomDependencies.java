@@ -12,7 +12,7 @@ import java.util.*;
 @Data
 public class PomDependencies {
     // pom.xml所在的位置
-    private String url;
+    private String path;
     // 需要修改的依赖项数组
     @Setter(AccessLevel.NONE)
     private Set<Dependency> dependencySet;
@@ -24,8 +24,8 @@ public class PomDependencies {
     public PomDependencies() {
     }
 
-    public PomDependencies(String url, Dependency... dependencies) {
-        this.url = url;
+    public PomDependencies(String path, Dependency... dependencies) {
+        this.path = path;
         this.dependencySet.addAll(Arrays.asList(dependencies));
     }
 

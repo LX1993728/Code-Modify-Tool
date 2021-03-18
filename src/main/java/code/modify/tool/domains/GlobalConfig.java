@@ -2,11 +2,10 @@ package code.modify.tool.domains;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,9 @@ public class GlobalConfig {
 
     // 构建工程的根目录
     @Getter
-    private static String  buildWorkSpace = "build";
+    private static String  buildWorkSpace = "C:\\Users\\liuxun\\Desktop\\runtime\\test\\build";
+    // embedded-maven 命令使用的本地仓库地址
+    @Getter
     private static String repositoryPath = null;
 
     static {
@@ -57,6 +58,7 @@ public class GlobalConfig {
 
     // 加载仓库与构建目录相关的配置文件 默认文件名是config.properties
     private static void loadConfProperties() throws IOException {
+        sepLine("开始加载全局配置", false);
         String confLocation = "config.properties";
         File configFile = new File(confLocation);
         if (!configFile.exists()){
@@ -73,12 +75,28 @@ public class GlobalConfig {
         svnUsername =  props.getProperty("svnUsername", svnUsername);
         svnPassword =  props.getProperty("svnPassword", svnPassword);
         buildWorkSpace =  props.getProperty("buildWorkSpace", buildWorkSpace);
+        repositoryPath = props.getProperty("repositoryPath", repositoryPath);
 
         log.info("config.properties exists, after load config and the values follow......");
         log.info("serverSvnUrl=\t{}", serverSvnUrl);
         log.info("serviceRenewSvnUrl=\t{}", serviceRenewSvnUrl);
         log.info("frontGitUrl=\t{}", frontGitUrl);
         log.info("buildWorkSpace=\t{}", buildWorkSpace);
+        log.info("repositoryPath=\t{}", repositoryPath);
+        sepLine("全局配置加载完毕", true);
+    }
+
+    /**
+     * 打印日志阶段性的分割线 并携带标题
+     * @param title  分割线中间的标题内容
+     * @param isWrap  是否换行
+     */
+    public static void sepLine(String title, boolean isWrap){
+        if (StringUtils.isNotEmpty(title)){
+            log.info("------------------[ {} ]------------------{}", title, isWrap ? "\n" : "");
+        }else {
+            log.info("-------------------------------------------{}", isWrap ? "\n" : "");
+        }
     }
 
 
@@ -86,7 +104,7 @@ public class GlobalConfig {
      * 获取运行依赖环境的的路径
      * @return
      */
-    public static String getGlobalSpace(){
+    public static String getGlobalServerSpace(){
         return buildWorkSpace + File.separator + "server";
     }
 
@@ -95,7 +113,7 @@ public class GlobalConfig {
      * @return
      */
     public static String getServiceSpace(){
-        return getGlobalSpace() + File.separator + "web" + File.separator + "service";
+        return getGlobalServerSpace() + File.separator + "web" + File.separator + "service";
     }
 
     /**
@@ -103,7 +121,7 @@ public class GlobalConfig {
      * @return
      */
     public static String getRenewFrontSpace(){
-        return getGlobalSpace() + File.separator + "front";
+        return getGlobalServerSpace() + File.separator + "front";
     }
 
     /**
@@ -112,7 +130,7 @@ public class GlobalConfig {
      * @return
      */
     private static String getEnvPath(String ... paths){
-        StringBuffer buffer = new StringBuffer(getGlobalSpace()).append(File.separator);
+        StringBuffer buffer = new StringBuffer(getGlobalServerSpace()).append(File.separator);
         for (String p : paths){
             buffer.append(p).append(File.separator);
         }
@@ -124,7 +142,7 @@ public class GlobalConfig {
      * 获取本地环境中需要修改的List项
      * @return
      */
-    public List<PomDependencies> getLocalPomsNeedModifiedList(){
+    public static List<PomDependencies> getLocalPomsNeedModifiedList(){
         //  需要修改的代码依赖项
         final Dependency lombokDependency = new Dependency("org.projectlombok", "lombok", "1.18.10", "provided");
         final Dependency jaxpDependency = new Dependency("com.sun.org.apache", "jaxp-ri", "1.4");
@@ -133,7 +151,7 @@ public class GlobalConfig {
         String streamagentPath = getEnvPath("show", "streamagent");
         String clientShowPath = getEnvPath("trade-show", "client-show");
         String tradeShowPath = getEnvPath("trade-show");
-        String basePath = getEnvPath("base");
+        String basePath = getEnvPath("web", "base");
         String webPath = getEnvPath("web");
 
         // 封装PD对象: 包含需要修改的依赖项和对应的
