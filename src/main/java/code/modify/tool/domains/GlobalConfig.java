@@ -200,4 +200,24 @@ public class GlobalConfig {
         return resultPomDependencies;
     }
 
+    /**
+     *  install front所依赖所有模块
+     * @return
+     */
+    public static List<MvnBuilder> getEnvMvnBuilds(){
+        // base         路径: server/web/base 命令: clean install
+        // cyou-memcached 路径: server/cyou-memcached 命令: clean install
+        // cyou-dao     路径: server/cyou-dao 命令: cleam install
+        // cyou-online  路径: server/cyou-online 命令: clean install
+        // cyou-lockclient 路径: server/cyou-lockclient 命令: clean install
+        // tool         路径: server/web/tool  命令: clean install
+        // domain-show  路径: server/trade-show/domain-show 命令: clean install
+        // client-show  路径: server/trade-show/client-show 命令: clean install
+        // service      路径: server/web/service 命令: clean install -P ${profile}
+        // front
+
+        return null;
+    }
+
+
 }
