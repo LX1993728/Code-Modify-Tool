@@ -39,7 +39,7 @@ public class GlobalConfig {
     private static String svnPassword = "liuxun1993728";
     // 主要针对front和service而言 常见有三个值 tl_trunk/tl_lm/tl_global
     @Getter
-    private static String profile = "tl_trunk";
+    private static String profile = "tl_lm";
 
     // 构建工程的根目录
     @Getter
@@ -47,12 +47,15 @@ public class GlobalConfig {
     // embedded-maven 命令使用的本地仓库地址
     @Getter
     private static String repositoryPath = null;
+    // 作为front包备份的根目录
+    @Getter
+    private static String backupRootPath = null;
 
     static {
         // 初始化项目构建的根目录
         File buildDir = new File(buildWorkSpace);
         if (!buildDir.exists()){
-            log.info("构建根目录不存在, 创建中...");
+            System.out.println("构建根目录不存在, 创建中...");
             buildDir.mkdirs();
         }
         try {
@@ -84,6 +87,7 @@ public class GlobalConfig {
         repositoryPath = props.getProperty("repositoryPath", repositoryPath);
         profile = props.getProperty("profile", profile);
         frontGitBranch = props.getProperty("frontGitBranch", frontGitBranch);
+        backupRootPath = props.getProperty("backupRootPath", backupRootPath);
 
         log.info("config.properties exists, after load config and the values follow......");
         log.info("serverSvnUrl=\t{}", serverSvnUrl);
@@ -93,6 +97,7 @@ public class GlobalConfig {
         log.info("buildWorkSpace=\t{}", buildWorkSpace);
         log.info("profile=\t{}", profile);
         log.info("repositoryPath=\t{}", repositoryPath);
+        log.info("backupRootPath=\t{}", backupRootPath);
         sepLine("全局配置加载完毕", true);
     }
 
@@ -215,7 +220,41 @@ public class GlobalConfig {
         // client-show  路径: server/trade-show/client-show 命令: clean install
         // service      路径: server/web/service 命令: clean install -P ${profile}
         // front
+        String basePath = getEnvPath("web", "base");
+        String cyouMemcached = getEnvPath("cyou-memcached");
+        String cyouDaoPath =  getEnvPath("cyou-dao");
+        String cyouOnlinePath =  getEnvPath("cyou-online");
+        String cyouLockClient = getEnvPath("cyou-lockclient");
+        String toolPath = getEnvPath("web", "tool");
+        String domainShowPath = getEnvPath("trade-show", "domain-show");
+        String clientShowPath = getEnvPath("trade-show", "client-show");
+        String servicePath = getServiceSpace();
+        String[] envCommands = new String[]{"clean", "install"};
+        String[] serviceCommands = new String[]{"clean", "install", "-P", GlobalConfig.getProfile()};
 
+        // 封装MvnBuilder 对象
+        List<MvnBuilder> builders = new ArrayList<>();
+        builders.add(new MvnBuilder(basePath, envCommands));
+        builders.add(new MvnBuilder(cyouMemcached, envCommands));
+        builders.add(new MvnBuilder(cyouDaoPath, envCommands));
+        builders.add(new MvnBuilder(cyouOnlinePath, envCommands));
+        builders.add(new MvnBuilder(cyouLockClient, envCommands));
+        builders.add(new MvnBuilder(toolPath, envCommands));
+        builders.add(new MvnBuilder(domainShowPath, envCommands));
+        builders.add(new MvnBuilder(clientShowPath, envCommands));
+        builders.add(new MvnBuilder(servicePath, serviceCommands));
+        // 最后执行front的打包
+        // front的打包配置放在 MvnBuilder类的静态配置中...
+        return builders;
+    }
+
+    /**
+     * 生成front当前备份的子文件夹
+     * @return
+     */
+    public static String  backupRenewFrontDirPath(){
+        // 指定生成的格式
+        // 
         return null;
     }
 

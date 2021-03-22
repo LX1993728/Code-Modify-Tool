@@ -20,10 +20,10 @@ public class MvnBuilder {
 
     // front 项目的路径
     @Getter
-    public static String frontPath;
+    private static final String frontPath;
     // front对应的打包命令
     @Getter
-    public static String[] frontCommands;
+    private static final String[] frontCommands;
     static {
         frontPath =  GlobalConfig.getRenewFrontSpace();
         String profile = GlobalConfig.getProfile();

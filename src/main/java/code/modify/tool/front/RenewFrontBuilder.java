@@ -1,8 +1,10 @@
 package code.modify.tool.front;
 
 import code.modify.tool.domains.GlobalConfig;
+import code.modify.tool.domains.MvnBuilder;
 import code.modify.tool.domains.PomDependencies;
 import code.modify.tool.utils.ReplaceUtil;
+import code.modify.tool.utils.embedmaven.MavenCliBuilder;
 import code.modify.tool.utils.jgit.GitUtil;
 import code.modify.tool.utils.pomxml.DVtdUtil;
 import code.modify.tool.utils.svnkit.SVNKitUtil;
@@ -136,7 +138,25 @@ public class RenewFrontBuilder {
      * 对重构后的相关环境依赖以及front进行打包
      */
     public static void BuildEnvAndRenewFront(){
-        
+        GlobalConfig.sepLine("", false);
+        GlobalConfig.sepLine("开始进行front依赖环境的打包", true);
+        final List<MvnBuilder> envMvnBuilds = GlobalConfig.getEnvMvnBuilds();
+        for (MvnBuilder mb : envMvnBuilds){
+            String path = mb.getPath();
+            final String[] commands = mb.getCommands();
+            log.info("开始执行maven命令 path={}\t  command={}\t", path, commands);
+            new MavenCliBuilder(new File(path), commands).build();
+            log.info("执行maven命令完毕 path={}\t  command={}\t", path, commands);
+        }
+
+        GlobalConfig.sepLine("front依赖环境打包完毕, 开始进行front的打包", true);
+        final String frontPath = MvnBuilder.getFrontPath();
+        final String[] frontCommands = MvnBuilder.getFrontCommands();
+        new MavenCliBuilder(new File(frontPath), frontCommands).buildWithConsole();
+
+        GlobalConfig.sepLine("front 打包完毕...", true);
+        // 开始进行front包的备份
+
     }
 
     /**
@@ -148,5 +168,6 @@ public class RenewFrontBuilder {
 
     public static void main(String[] args) throws IOException, SVNException, GitAPIException {
        pullAndModifyCode();
+       BuildEnvAndRenewFront();
     }
 }
